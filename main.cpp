@@ -5,7 +5,7 @@
 using namespace std;
 
 int main(){
-    string fn = "test.txt";
+    string fn = "tests/lab2";
     ifstream fin(fn);
     auto tokens = lexer(fin);
     unordered_map<string, int> ident_cnt;

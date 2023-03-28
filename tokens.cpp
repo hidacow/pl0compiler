@@ -47,11 +47,12 @@ struct token{
     friend ostream& operator<<(std::ostream& os, const token& t){
         os<<"(";
         if(t.type == ident)
-            os << wordlist_sym[t.type] << ", " << t.value << ")";
+            os << wordlist_sym[t.type] << ", " << t.value;
         else if(t.type == number)
-            os << wordlist_sym[t.type] << ", " << t.num  << ")";
+            os << wordlist_sym[t.type] << ", " << t.num;
         else
-            os << wordlist_sym[t.type] << ", " << wordlist_str[t.type] << ")";
+            os << wordlist_sym[t.type] << ", " << wordlist_str[t.type];
+        os << ")";
         return os;
     }
 };
