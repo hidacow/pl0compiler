@@ -19,7 +19,7 @@ enum wordlist{
 vector<string> wordlist_sym{
     "beginsym", "callsym", "constsym", "dosym", "endsym", "ifsym",
     "oddsym", "procsym", "readsym", "thensym", "varsym", "whilesym",
-    "writesym", "plus", "minus", "times", "slash",
+    "writesym", "plussym", "minussym", "times", "slash",
     "eql", "neq", "lss", "leq", "gtr", "geq", "becomes", "lparen", "rparen",
     "comma", "semicolon", "period", "ident", "number"
 };
