@@ -3,8 +3,16 @@
 
 using namespace std;
 
-int main(){
-    string fn = "tests/lab2";
+int main(int argc,char *argv[]){
+    if(argc>2){
+        cout<<"Usage: main [filename]"<<endl;
+        return 0;
+    }
+    string fn = "tests/4";
+    if(argc==2){
+        fn = argv[1];
+    }
+    cout<< "File: " << fn << endl;
     ifstream fin(fn);
     auto tokens = lexer(fin);
     unordered_map<string, int> ident_cnt;

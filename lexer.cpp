@@ -43,7 +43,7 @@ vector<token> lexer(ifstream &fin)
     string current_ident = "";
 
     vector<token> token_list;
-    int current_line = 1;
+    int current_line = 0;
     bool is_eof = false;
     while (!is_eof)
     {
@@ -104,7 +104,7 @@ vector<token> lexer(ifstream &fin)
             else
             {
                 cout << "Invalid character: " << ch << "(" << (int)ch << ")" << endl;
-                throw std::runtime_error("Invalid character");
+                throw std::runtime_error("Invalid character (" + std::to_string((int)ch) + ") on column " + std::to_string(current_line));
             }
             break;
         case inident:

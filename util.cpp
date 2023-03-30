@@ -10,5 +10,5 @@ string to_lower(const string& str){
 }
 
 bool is_blank(char ch){
-    return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r' || isblank(ch);
+    return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r' || isblank(ch) || ch == '\0';
 }
