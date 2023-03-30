@@ -1,3 +1,4 @@
 checkpoint
 .vscode
 *.exe
+/cmake-build-debug/

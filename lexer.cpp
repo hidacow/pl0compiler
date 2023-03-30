@@ -98,7 +98,7 @@ vector<token> lexer(ifstream &fin)
             }
             else if (symbol_set.count(ch))
             {
-                token_list.push_back(token(wordlist_map[string(1,ch)],"",0,current_line));
+                token_list.emplace_back(wordlist_map[string(1,ch)],"",0,current_line);
                 current_state = start;
             }
             else
@@ -120,11 +120,11 @@ vector<token> lexer(ifstream &fin)
             {
                 if(wordlist_map.count(to_lower(current_ident)))
                 {
-                    token_list.push_back(token(wordlist_map[to_lower(current_ident)],"",0,current_line));
+                    token_list.emplace_back(wordlist_map[to_lower(current_ident)],"",0,current_line);
                 }
                 else
                 {
-                    token_list.push_back(token(ident,to_lower(current_ident),0,current_line));
+                    token_list.emplace_back(ident,to_lower(current_ident),0,current_line);
                 }
                 current_ident = "";
                 current_state = start;
@@ -143,7 +143,7 @@ vector<token> lexer(ifstream &fin)
             }
             else
             {
-                token_list.push_back(token(number,"",current_number,current_line));
+                token_list.emplace_back(number,"",current_number,current_line);
                 current_number = 0;
                 current_state = start;
                 fin.putback(ch);
@@ -174,7 +174,7 @@ vector<token> lexer(ifstream &fin)
             else
             {
                 current_state = start;
-                token_list.push_back(token(lss,"",0,current_line));
+                token_list.emplace_back(lss,"",0,current_line);
                 fin.putback(ch);
             }
             break;
@@ -186,33 +186,33 @@ vector<token> lexer(ifstream &fin)
             else
             {
                 current_state = start;
-                token_list.push_back(token(gtr,"",0,current_line));
+                token_list.emplace_back(gtr,"",0,current_line);
                 fin.putback(ch);
             }
             break;
         case inle:
             current_state = start;
-            token_list.push_back(token(leq,"",0,current_line));
+            token_list.emplace_back(leq,"",0,current_line);
             fin.putback(ch);
             break;
         case inge:
             current_state = start;
-            token_list.push_back(token(geq,"",0,current_line));
+            token_list.emplace_back(geq,"",0,current_line);
             fin.putback(ch);
             break;
         case ineq:
             current_state = start;
-            token_list.push_back(token(eql,"",0,current_line));
+            token_list.emplace_back(eql,"",0,current_line);
             fin.putback(ch);
             break;
         case inneq:
             current_state = start;
-            token_list.push_back(token(neq,"",0,current_line));
+            token_list.emplace_back(neq,"",0,current_line);
             fin.putback(ch);
             break;
         case assign:
             current_state = start;
-            token_list.push_back(token(becomes,"",0,current_line));
+            token_list.emplace_back(becomes,"",0,current_line);
             fin.putback(ch);
             break;
         default:
@@ -224,7 +224,7 @@ vector<token> lexer(ifstream &fin)
     
 }
 
-void save_token_list(vector<token> &token_list, string filename)
+void save_token_list(vector<token> &token_list, const string& filename)
 {
     ofstream fout(filename);
     for (auto &t : token_list)
@@ -234,7 +234,7 @@ void save_token_list(vector<token> &token_list, string filename)
     fout.close();
 }
 
-vector<token> parse_token_file(string filename){
+vector<token> parse_token_file(const string& filename){
     ifstream fin(filename);
     vector<token> token_list;
     string name,value;
@@ -243,12 +243,12 @@ vector<token> parse_token_file(string filename){
         value.pop_back();
         name = name.substr(1);
         if(name == "number"){
-            token_list.push_back(token(number,value,stoi(value),0));
+            token_list.emplace_back(number,value,stoi(value),0);
         }
         else if(name == "ident"){
-            token_list.push_back(token(ident,value,0,0));
+            token_list.emplace_back(ident,value,0,0);
         }else if(wordlist_map.count(value)){
-            token_list.push_back(token(wordlist_map[value],"",0,0));
+            token_list.emplace_back(wordlist_map[value],"",0,0);
         }
         else{
             cout << "Invalid token name: " << name << endl;

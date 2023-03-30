@@ -1,5 +1,6 @@
 #include<unordered_set>
 #include<unordered_map>
+#include <utility>
 #include<vector>
 #include<string>
 using std::unordered_set;
@@ -43,7 +44,7 @@ struct token{
     string value;
     long long num;
     int line;
-    token(wordlist type, string value, long long num, int line):type(type), value(value), num(num), line(line){}
+    token(wordlist type, string value, long long num, int line):type(type), value(std::move(value)), num(num), line(line){}
     friend ostream& operator<<(std::ostream& os, const token& t){
         os<<"(";
         if(t.type == ident)
