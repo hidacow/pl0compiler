@@ -58,3 +58,7 @@ struct token{
     }
 };
 
+bool isOperator(const token& t){
+    return t.type>=13 && t.type<=23;
+}
+

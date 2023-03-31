@@ -8,7 +8,7 @@ int main(int argc,char *argv[]){
         cout<<"Usage: main [filename]"<<endl;
         return 0;
     }
-    string fn = "tests/4";
+    string fn = "tests/1";
     if(argc==2){
         fn = argv[1];
     }
