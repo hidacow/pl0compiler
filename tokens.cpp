@@ -36,15 +36,15 @@ unordered_map<string,wordlist> wordlist_map = {{"begin", beginsym}, {"call", cal
                                           {",", comma}, {";", semicolon}, {".", period}};
 
 
-
+// 所有出现的符号字符，如果出现了不在这个集合中的符号，就是非法符号
 unordered_set<char> symbol_set = {'+', '-', '*', '/', '=', '#', '<', '>', ':', '(', ')', ',', ';', '.'};
 
 struct token{
     wordlist type;
     string value;
     long long num;
-    int line;
-    token(wordlist type, string value, long long num, int line):type(type), value(std::move(value)), num(num), line(line){}
+    int pos;
+    token(wordlist type, string value, long long num, int line):type(type), value(std::move(value)), num(num), pos(line){}
     friend ostream& operator<<(std::ostream& os, const token& t){
         os<<"(";
         if(t.type == ident)

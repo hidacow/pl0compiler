@@ -1,6 +1,8 @@
 checkpoint
 .vscode
 .idea
+.vs
+out/
 *.exe
 /cmake-build-debug/
 /cmake-build-release/
