@@ -1,3 +1,6 @@
+#ifndef _PL0C_LEXER
+#define _PL0C_LEXER
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -308,3 +311,5 @@ vector<token> parse_token_file(const string& filename){
     fin.close();
     return token_list;
 }
+
+#endif

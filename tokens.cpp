@@ -1,3 +1,6 @@
+#ifndef _PL0C_TOKEN
+#define _PL0C_TOKEN
+
 #include<unordered_set>
 #include<unordered_map>
 #include <utility>
@@ -62,3 +65,4 @@ bool isOperator(const token& t){
     return t.type>=13 && t.type<=23;
 }
 
+#endif
