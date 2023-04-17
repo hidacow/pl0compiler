@@ -8,7 +8,7 @@ int main(int argc,char *argv[]){
         cout<<"Usage: main [filename]"<<endl;
         return 0;
     }
-    string fn = "tests/1";
+    string fn = "tests/5";
     if(argc==2){
         fn = argv[1];
     }
@@ -47,6 +47,7 @@ LAB 3
     cout<<endl<<endl;
     try{
         expression.parse_expression();
+        expression.end();
         cout<<"Passed"<<endl;
     }catch (const std::exception& e){
         cout << "Error: " << e.what() << endl;

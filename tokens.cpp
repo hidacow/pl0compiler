@@ -60,6 +60,15 @@ struct token{
         os << ")";
         return os;
     }
+    string show() const{
+        if(this->type == ident)
+            return this->value;
+        else if(this->type == number)
+            return std::to_string(this->num);
+        else
+            return wordlist_str[this->type];
+    }
+
     string showpos() const{
         return std::to_string(line)+":"+std::to_string(pos);
     }

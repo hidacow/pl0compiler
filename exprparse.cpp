@@ -13,11 +13,14 @@ public:
     exprparse(vector<token> tokens): tokens(std::move(tokens)), pos(0){}
 
     token nexttoken(){
-        if(pos>=tokens.size()-1)
-            throw std::runtime_error(parserErrors[0]);
-        return tokens[++pos];
+        if(pos++>=tokens.size()-1)
+            return {endsym,"",0,0,0};
+            //throw std::runtime_error(parserErrors[0]);
+        return tokens[pos];
     }
     token peektoken(){
+        if(pos==tokens.size())
+            return {endsym,"",0,0,0};
         return tokens[pos];
     }
     token prevtoken(){
@@ -50,11 +53,8 @@ public:
     void parse_expression(){
         if(peektoken().type == plussym || peektoken().type == minussym){
             nexttoken();
-            parse_term();
-        }else{
-            nexttoken();
-            parse_term();
         }
+        parse_term();
         while(peektoken().type == plussym || peektoken().type == minussym){
             nexttoken();
             parse_term();
@@ -64,7 +64,6 @@ public:
     // term 项的产生式
     // <项> → <因子>{<乘除运算符><因子>}
     void parse_term(){
-        peektoken();
         parse_factor();
         while(peektoken().type == times || peektoken().type == slash){
             nexttoken();
@@ -80,14 +79,22 @@ public:
         }else if(peektoken().type == number){
             nexttoken();
         }else if(peektoken().type == lparen){
+            nexttoken();
             parse_expression();
             if(peektoken().type == rparen){
-                cout << "next rparen: " << nexttoken() << endl;
+                nexttoken();
             }else{
                 throw std::runtime_error(parserErrors[22]);
             }
+        }else{
+            throw std::runtime_error(parserErrors[23]);
         }
 
+    }
+
+    void end(){
+        if(pos<tokens.size())
+            throw std::runtime_error(parserErrors[8]+" expression already ended before token "+std::to_string(pos) + " [ " + tokens[pos].show() + " ]");
     }
 
 
