@@ -46,8 +46,9 @@ struct token{
     wordlist type;
     string value;
     long long num;
+    int line;
     int pos;
-    token(wordlist type, string value, long long num, int line):type(type), value(std::move(value)), num(num), pos(line){}
+    token(wordlist type, string value, long long num, int line,int pos):type(type), value(std::move(value)), num(num), line(line), pos(pos){}
     friend ostream& operator<<(std::ostream& os, const token& t){
         os<<"(";
         if(t.type == ident)
@@ -58,6 +59,9 @@ struct token{
             os << wordlist_sym[t.type] << ", " << wordlist_str[t.type];
         os << ")";
         return os;
+    }
+    string showpos() const{
+        return std::to_string(line)+":"+std::to_string(pos);
     }
 };
 

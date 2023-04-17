@@ -40,7 +40,7 @@ enum state      //状态机状态枚举类
 constexpr size_t MAX_TOKEN_SIZE = 25;
 constexpr size_t MAX_NUM_SIZE = 10;
 
-vector<token> lexer(ifstream &fin)
+vector<token> lexer(ifstream &fin,const string &fn)
 {
     assert(fin);
     int current_state = start;
@@ -48,7 +48,7 @@ vector<token> lexer(ifstream &fin)
     string current_ident;
     int errors = 0, warnings = 0;
     vector<token> token_list;
-    int pos = 0;
+    int line = 1, pos = 0;
     bool is_eof = false;
     while (!is_eof)
     {
@@ -65,6 +65,10 @@ vector<token> lexer(ifstream &fin)
         case start:
             if (is_blank(ch))
             {
+                if(ch=='\n'){
+                    line++;
+                    pos=0;
+                }
                 current_state = start;
             }
             else if (isdigit(ch))
@@ -103,12 +107,12 @@ vector<token> lexer(ifstream &fin)
             }
             else if (symbol_set.count(ch))
             {
-                token_list.emplace_back(wordlist_map[string(1,ch)],string(1,ch),0,pos);
+                token_list.emplace_back(wordlist_map[string(1,ch)],string(1,ch),0,line,pos);
                 current_state = start;
             }
             else
             {
-                cerr << "Invalid character: " << ch << "(" << (int)ch << ") on column " << pos << endl;
+                cerr << "Invalid character: " << ch << "(" << (int)ch << ") at " << fn << ":" << line << ":" << pos << endl;
                 errors++;
             }
             break;
@@ -127,9 +131,9 @@ vector<token> lexer(ifstream &fin)
             else
             {
                 if(wordlist_map.count(to_lower(current_ident)))
-                    token_list.emplace_back(wordlist_map[to_lower(current_ident)],"",0,pos);
+                    token_list.emplace_back(wordlist_map[to_lower(current_ident)],"",0,line,pos);
                 else
-                    token_list.emplace_back(ident,to_lower(current_ident),0,pos);
+                    token_list.emplace_back(ident,to_lower(current_ident),0,line,pos);
                 current_ident = "";
                 current_state = start;
                 fin.putback(ch);
@@ -142,7 +146,7 @@ vector<token> lexer(ifstream &fin)
                 if(current_number > pow(10, MAX_NUM_SIZE-1))
                 {
 //                    throw std::runtime_error("Number too large");
-                    std::cerr << "Number too large: " << current_number << "... on column " << pos << endl;
+                    std::cerr << "Number too large: " << current_number << "... at " << fn << ":" << line << ":" << pos << endl;
                     errors++;
                     current_number = 0;
                     current_state = start;
@@ -151,7 +155,7 @@ vector<token> lexer(ifstream &fin)
             }
             else
             {
-                token_list.emplace_back(number,"",current_number,pos);
+                token_list.emplace_back(number,"",current_number,line,pos);
 //                if(isalpha(ch)) {
 //                    cerr << "Invalid ident starting with " << current_number << " on column " << current_line << endl;
 //                    errors++;
@@ -175,7 +179,7 @@ vector<token> lexer(ifstream &fin)
             }
             else
             {
-                cerr << "Invalid character '" << ch << "' after ':' on column " << pos << endl;
+                cerr << "Invalid character '" << ch << "' after ':' at " << fn << ":" << line << ":" << pos << endl;
                 errors++;
                 current_state = start;
             }
@@ -188,7 +192,7 @@ vector<token> lexer(ifstream &fin)
             else
             {
                 current_state = start;
-                token_list.emplace_back(lss,wordlist_str[lss],0,pos);
+                token_list.emplace_back(lss,wordlist_str[lss],0,line,pos);
                 fin.putback(ch);
             }
             break;
@@ -200,33 +204,33 @@ vector<token> lexer(ifstream &fin)
             else
             {
                 current_state = start;
-                token_list.emplace_back(gtr,wordlist_str[gtr],0,pos);
+                token_list.emplace_back(gtr,wordlist_str[gtr],0,line,pos);
                 fin.putback(ch);
             }
             break;
         case inle:
             current_state = start;
-            token_list.emplace_back(leq,wordlist_str[leq],0,pos);
+            token_list.emplace_back(leq,wordlist_str[leq],0,line,pos);
             fin.putback(ch);
             break;
         case inge:
             current_state = start;
-            token_list.emplace_back(geq,wordlist_str[geq],0,pos);
+            token_list.emplace_back(geq,wordlist_str[geq],0,line,pos);
             fin.putback(ch);
             break;
         case ineq:
             current_state = start;
-            token_list.emplace_back(eql,wordlist_str[eql],0,pos);
+            token_list.emplace_back(eql,wordlist_str[eql],0,line,pos);
             fin.putback(ch);
             break;
         case inneq:
             current_state = start;
-            token_list.emplace_back(neq,wordlist_str[neq],0,pos);
+            token_list.emplace_back(neq,wordlist_str[neq],0,line,pos);
             fin.putback(ch);
             break;
         case assign:
             current_state = start;
-            token_list.emplace_back(becomes,wordlist_str[becomes],0,pos);
+            token_list.emplace_back(becomes,wordlist_str[becomes],0,line,pos);
             fin.putback(ch);
             break;
         default:
@@ -242,23 +246,23 @@ vector<token> lexer(ifstream &fin)
             continue;
         }
         if(t.type == ident && lasttoken.type == number){
-            cerr << "Invalid ident: " << lasttoken.num << t.value << " on column " << lasttoken.pos << endl;
+            cerr << "Invalid ident: " << lasttoken.num << t.value << " at " << fn << ":" << lasttoken.showpos() << endl;
             errors++;
         }
         if(t.type == ident && lasttoken.type == ident){
-            cerr << "Invalid ident: " << lasttoken.value << t.value << " on column " << lasttoken.pos << endl;
+            cerr << "Invalid ident: " << lasttoken.value << t.value << " at " << fn << ":" << lasttoken.showpos() << endl;
             errors++;
         }
         if(t.type == number && lasttoken.type == ident){
-            cerr << "Invalid ident: " << lasttoken.value << t.num << " on column " << lasttoken.pos << endl;
+            cerr << "Invalid ident: " << lasttoken.value << t.num << " at " << fn << ":" << lasttoken.showpos() << endl;
             errors++;
         }
         if(t.type == number && lasttoken.type == number){
-            cerr << "Invalid ident: " << lasttoken.num << t.num << " on column " << lasttoken.pos << endl;
+            cerr << "Invalid ident: " << lasttoken.num << t.num << " at " << fn << ":" << lasttoken.showpos() << endl;
             errors++;
         }
         if(isOperator(t) && isOperator(lasttoken)){
-            cerr << "Invalid operator: " << lasttoken.value << t.value << " on column " << lasttoken.pos << endl;
+            cerr << "Invalid operator: " << lasttoken.value << t.value << " at " << fn << ":" << lasttoken.showpos() << endl;
             errors++;
         }
         lasttoken = t;
@@ -275,6 +279,11 @@ vector<token> lexer(ifstream &fin)
     return token_list;
     
 }
+
+string showerrpos(const string& fn, int line, int pos){
+    return " at " + fn + ":" + std::to_string(line) + ":" + std::to_string(pos);
+}
+
 
 void save_token_list(vector<token> &token_list, const string& filename)
 {
@@ -295,12 +304,12 @@ vector<token> parse_token_file(const string& filename){
         value.pop_back();
         name = name.substr(1);
         if(name == "number"){
-            token_list.emplace_back(number,value,stoi(value),0);
+            token_list.emplace_back(number,value,stoi(value),0,0);
         }
         else if(name == "ident"){
-            token_list.emplace_back(ident,value,0,0);
+            token_list.emplace_back(ident,value,0,0,0);
         }else if(wordlist_map.count(value)){
-            token_list.emplace_back(wordlist_map[value],"",0,0);
+            token_list.emplace_back(wordlist_map[value],"",0,0,0);
         }
         else{
             cout << "Invalid token name: " << name << endl;

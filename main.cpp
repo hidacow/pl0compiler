@@ -8,7 +8,7 @@ int main(int argc,char *argv[]){
         cout<<"Usage: main [filename]"<<endl;
         return 0;
     }
-    string fn = "tests/lab3";
+    string fn = "tests/1";
     if(argc==2){
         fn = argv[1];
     }
@@ -19,7 +19,7 @@ int main(int argc,char *argv[]){
         cerr << "Error opening file." << endl;
         return 0;
     }
-//    auto tokens = lexer(fin);
+    auto tokens = lexer(fin,fn);
 //    /*
 //    LAB 1
 //    */
@@ -37,20 +37,19 @@ int main(int argc,char *argv[]){
 //    for (auto &item : tokens)
 //        cout << item << endl;
 //    save_token_list(tokens, fn+".token");
-     auto testdic = parse_token_file(fn);
-     for (auto &item : testdic)
-     {
-         cout << item << endl;
-     }
+     //auto tokens = parse_token_file(fn);
 /*
 LAB 3
 */
-    auto expression = exprparse(testdic);
-    expression.showtokens();
+
+    auto expression = exprparse(tokens);
+    expression.showraw();
+    cout<<endl<<endl;
     try{
         expression.parse_expression();
+        cout<<"Passed"<<endl;
     }catch (const std::exception& e){
-        cout << e.what() << endl;
+        cout << "Error: " << e.what() << endl;
     }
     return 0;
 
