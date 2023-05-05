@@ -1,46 +1,53 @@
 #include<iostream>
 #include "lexer.cpp"
-
+#include "exprparse.cpp"
 using namespace std;
-
 int main(int argc,char *argv[]){
     if(argc>2){
         cout<<"Usage: main [filename]"<<endl;
         return 0;
     }
-    string fn = "tests/1";
+    string fn = "tests/5";
     if(argc==2){
         fn = argv[1];
     }
     cout<< "File: " << fn << endl;
     ifstream fin(fn);
-    auto tokens = lexer(fin);
-    unordered_map<string, int> ident_cnt;
-    for (auto &item : tokens)
+    if (!fin)
     {
-        if (item.type == ident)
-        {
-            ident_cnt[item.value]++;
-        }
+        cerr << "Error opening file." << endl;
+        return 0;
     }
-    for (auto &item : ident_cnt)
-    {
-        if (!wordlist_map.count(item.first))
-        {
-            cout << "(" << item.first << ": " << item.second << ")" << endl;
-        }
-    }
+    auto tokens = lexer(fin,fn);
+//    /*
+//    LAB 1
+//    */
+//    unordered_map<string, int> ident_cnt;
+//    for (auto &item : tokens)
+//        if (item.type == ident)
+//            ident_cnt[item.value]++;
+//    for (auto &item : ident_cnt)
+//        if (!wordlist_map.count(item.first))
+//            cout << "(" << item.first << ": " << item.second << ")" << endl;
+//    cout<<endl<<endl;
+//    /*
+//    LAB 2
+//    */
+//    for (auto &item : tokens)
+//        cout << item << endl;
+//    save_token_list(tokens, fn+".token");
+    //auto tokens = parse_token_file(fn);
+/*
+LAB 3
+*/
+    auto expression = exprparse(tokens);
+    expression.showraw();
     cout<<endl<<endl;
-
-    for (auto &item : tokens)
-    {
-        cout << item << endl;
+    try{
+        cout<<"Result: "<<expression.parse_expression()<<endl;
+        expression.end();
+    }catch (const std::exception& e){
+        cout << "Error: " << e.what() << endl;
     }
-    save_token_list(tokens, fn+".token");
-    // auto testdic = parse_token_file(fn+".token");
-    // for (auto &item : testdic)
-    // {
-    //     cout << item << endl;
-    // }
-
+    return 0;
 }

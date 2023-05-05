@@ -58,9 +58,8 @@ public:
             if(peektoken().type == minussym)
                 is_negative = true;
             nexttoken();
-        }else{
-            result = parse_term();
         }
+        result = parse_term();
 
         while(peektoken().type == plussym || peektoken().type == minussym){
             if(peektoken().type == plussym){
