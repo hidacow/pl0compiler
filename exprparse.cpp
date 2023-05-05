@@ -59,7 +59,7 @@ public:
                 is_negative = true;
             nexttoken();
         }
-        result = parse_term();
+        result = is_negative? -parse_term():parse_term();
 
         while(peektoken().type == plussym || peektoken().type == minussym){
             if(peektoken().type == plussym){
@@ -71,7 +71,7 @@ public:
             }
             
         }
-        return is_negative?-result:result;
+        return result;
     }
 
     // term 项的产生式
