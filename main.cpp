@@ -41,13 +41,26 @@ int main(int argc,char *argv[]){
 LAB 3
 */
     auto expression = exprparse(tokens);
-    expression.showraw();
-    cout<<endl<<endl;
+//    expression.showraw();
+//    cout<<endl<<endl;
+//    try{
+//        cout<<"Result: "<<expression.parse_expression()<<endl;
+//        expression.end();
+//    }catch (const std::exception& e){
+//        cout << "Error: " << e.what() << endl;
+//    }
+/*
+LAB 4
+*/
+    int result;
     try{
-        cout<<"Result: "<<expression.parse_expression()<<endl;
+        result = expression.parse_expression();
+        expression.showtac();
         expression.end();
+        cout<<"Passed"<<endl;
     }catch (const std::exception& e){
         cout << "Error: " << e.what() << endl;
     }
+    //cout << "Result: " << result << endl;
     return 0;
 }
